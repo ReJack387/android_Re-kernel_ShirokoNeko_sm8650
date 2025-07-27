@@ -173,7 +173,7 @@ jobs:
         run: |
           cd kernel_workspace
           echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
-          echo "CONFIG_KPM=n" >> ./common/arch/arm64/configs/gki_defconfig
+          echo "CONFIG_KPM=y" >> ./common/arch/arm64/configs/gki_defconfig
           if [ "${{ github.event.inputs.hook_method }}" == "kprobes" ]; then
             echo "正在开启kprobes钩子..."
             echo "CONFIG_KSU_SUSFS_SUS_SU=y" >> ./common/arch/arm64/configs/gki_defconfig
@@ -291,14 +291,14 @@ jobs:
           make -j$(nproc --all) LLVM=-20 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-Wno-error gki_defconfig all
           echo "内核编译完成！"
          
-      #- name: 应用patch_linux并修补内核
-      #  run: |
-      #    cd kernel_workspace/common/out/arch/arm64/boot
-      #    curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.12.0/patch_linux
-      #    chmod +x patch_linux
-      #    ./patch_linux
-      #    rm -f Image
-      #    mv oImage Image
+      - name: 应用patch_linux并修补内核
+        run: |
+          cd kernel_workspace/common/out/arch/arm64/boot
+          curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.12.0/patch_linux
+          chmod +x patch_linux
+          ./patch_linux
+          rm -f Image
+          mv oImage Image
           
       - name: 克隆 AnyKernel3 并打包
         run: |
